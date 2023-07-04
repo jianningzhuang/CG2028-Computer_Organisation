@@ -1,0 +1,44 @@
+There are 256 blocks in MM with each block containing 4 words each. If word addressable => 256*4 = 2^10 words
+10 bit address issued by processor to cache controller
+
+2 bits for word offset since each block has 4 words
+
+since it is 2 way set associative, each set has 2 blocks. cache has 4 blocks => there are 2 sets in cache 
+=> 1 bit to identify set
+1 bit for set
+
+block%2 = which set to map to
+
+each set has 256/2 = 2^7 possible mappings from MM
+7 bits for tag
+
+    x x x x x x x x h h
+SEQ 0 1 2 3 4 6 2 0 3 1
+
+    0 0 0 0 4 4 2 2 2 2
+        2 2 2 6 6 0 0 0
+      1 1 1 1 1 1 1 1 1
+          3 3 3 3 3 3 3 
+
+
+ADD R1, R2, R3   read from R2 and R3 in cycle 1+1=2. Write to destination R1 in cycle 1+4=5.
+STR R1, [R4]  read from R1 and R4 in cycle 2+1=3. Write to address in R4 in cycle 2+4=6.
+
+can only read from R1 earliest cycle 5+1=6 => 3 NOPs
+
+
+All the information related to an instruction should move together and should be delayed equally.
+For example, we only write back to destination register in WB(5th stage).
+RdW, ResultW and RegWriteW must arrive at the same time.
+
+How many bits to store M register?
+
+count bits of all signals propogated through stage
+
+1 + 1 + 1 + 1 + 32 + 32 + 4 = 72 flip flops
+
+
+The cache is 4-way set associative hence we need 4 comparisons to check if a particular block is present 
+within the set it is mapped to. 
+The tag requires logs(8192/64) = 7 bits. 
+Additional overhead bits such as dirty and valid bits may be required.

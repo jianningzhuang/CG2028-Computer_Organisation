@@ -1,0 +1,65 @@
+
+Counting # negative numbers in list of n 32 bit integers
+
+	LDR R1, N //load count n into R1
+	LDR R2, =NUMBERS //load address NUM1 into R2 (first integer in list)
+	MOV R0, #0 //clear accumulator R0 first
+LOOP	LDR R3, [R2], #4 //load next number into R3
+	CMP R3, #0 //compare R3 with 0
+	IT MI //if negative MI
+	ADDMI R0, #1 // increment accumulator if negative
+	SUBS R1, #1 //decrement count and check if n > 0
+	BGT LOOP //branch back if n > 0
+	LDR R4, =NEGNUM
+	STR R0, [R4]
+
+
+
+Reverse order of bits in 32 bit register
+
+use 2 registers, copy value in R2 back to R1 after reversing bits 
+
+shift out rightmost bit in R1, push into R2 from the right
+
+	MOV R0, #1 //need rotate 32 times
+	MOV R2, #0 //initialise R2
+LOOP	LSRS R3, R1, R0
+	IT CS	
+	ADDCS R2, #1 //if C = 1, add 1 to R2 from right
+	LSL R3, R2, #1 //shift R2 left by 1 to make room for next bit
+	ADDS R0, #1
+	CMP R0, #32
+	BLE LOOP
+	STR R2, [R1]
+
+@actual code
+	LDR R1, B
+	MOV R0, #1
+	MOV R2, #0
+
+@ Loop at the end to allow inspection of registers and memory
+loop:
+	LSRS R3, R1, R0
+	IT CS
+	ADDCS R2, #1
+	LSL R2, R2, #1
+	ADDS R0, #1
+	CMP R0, #31
+	BLE loop
+	STR R2, [R1]
+
+
+fibonnaci
+
+	LDR R0, N //load count n into R1
+	MOV R1, #0
+	MOV R2, #1 
+LOOP    ADD R3, R1, R2
+	MOV R1, R2
+	MOV R2, R3
+	SUBS R1, #1 //decrement count and check if n > 0
+	BGT LOOP //branch back if n > 0	
+
+
+
+

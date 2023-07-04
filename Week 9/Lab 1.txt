@@ -1,0 +1,36 @@
+
+ANSWER = A*B + C*D
+
+	LDR R0, A @ PC-relative load
+	LDR R1, B
+	MUL R0, R1, R0
+	LDR R1, C
+	LDR R2, D
+	MLA R0, R1, R2, R0
+	LDR R3, =ANSWER
+	STR R0, [R3]
+
+ANSWER = A*A*A = A^3
+
+	LDR R0, A @ PC-relative load
+	LDR R1, A
+	MUL R0, R1, R0
+	MUL R0, R1, R0
+	LDR R3, =ANSWER
+	STR R0, [R3]
+
+ANSWER = root(A^2 + B^2) closest integer
+
+	LDR R0, A @ PC-relative load
+	LDR R1, B
+	MUL R0, R0, R0
+	MLA R0, R1, R1, R0
+	MOV R2, #0
+
+loop:
+	ADD R2, #1
+	MUL R3, R2, R2
+	CMP R0, R3
+	BGT loop
+	LDR R4, = ANSWER
+	STR R2, [R4]
